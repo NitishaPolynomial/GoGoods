@@ -4,9 +4,9 @@ flowchart TD
     B -- Empty Mobile Number --> B1@{ label: "Show 'Enter Mobile Number' Error" }
     B -- Invalid Format --> B2@{ label: "Show 'Invalid Mobile Number' Error" }
     B -- Valid Number --> C["Verify Mobile Number with OTP"]
-    C -- Invalid OTP --> D["Trigger Error Message & Retry"]
-    C -- Expired OTP --> E["Resend OTP & Allow Retry"]
-    C -- Too Many Invalid Attempts --> D1@{ label: "Block User Temporarily & Show 'Too Many Attempts' Error" }
+    C -- Invalid OTP <--> D["Trigger Error Message & Retry"]
+    C -- Expired OTP <--> E["Resend OTP & Allow Retry"]
+    C -- Too Many Invalid Attempts <--> D1@{ label: "Block User Temporarily & Show 'Too Many Attempts' Error" }
     C -- Valid OTP --> F{"Is the User New?"}
     F -- Yes --> G["Ask for Name"]
     G -- Empty Name --> G1@{ label: "Show 'Enter Name' Error & Retry" }
@@ -15,7 +15,7 @@ flowchart TD
     H --> I["Save Language, Name, User Type"]
     I --> J["Go to Dashboard/Home Screen"]
     F -- No --> J
-   
+    B1,B2,D,E,G1,H1["B1,B2,D,E,G1,H1"]
     B1@{ shape: rect}
     B2@{ shape: rect}
     D1@{ shape: rect}
