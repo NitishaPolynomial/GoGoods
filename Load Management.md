@@ -1,6 +1,6 @@
 ```mermaid 
    graph TD;
-    A[Start: Open App] --> B[Select 'Ship your goods']
+    A[Start: Open App] --> B['Hello']
     B --> C[Choose 'Now' or 'Schedule for later']
     C --> D[Enter Pickup Location]
     D -->|Invalid Address| D1[Show Error: Enter a valid address]
