@@ -5,8 +5,8 @@ flowchart TD
     A -- Yes --> C["Go to Dashboard"]
     C --> D{"Does User Want to Ship Goods?"}
     D -- No --> E["Continue Using App"]
-    D -- Yes --> F["Go to 'Ship Your Goods' Screen"]
-    F --> G["Selected 'Schedule Now' for Goods Pickup?"]
+    D -- Yes --> F@{ label: "Go to 'Ship Your Goods' Screen" }
+    F --> G@{ label: "Selected 'Schedule Now' for Goods Pickup?" }
     G -- Yes --> H["Select Pickup Address
     Validation - 
     1. Ensure the entered postal code is correct for the selected region.
@@ -16,14 +16,9 @@ flowchart TD
     1. Only current date & Future dates are allowed.
     2. Past dates are not allowed.
     3. Date format must be standard."]
-    I1 -- Invalid Date --> I2["Show 'Invalid Date' Error"]
-    I1 -- Valid Date --> K1["Select Time Slot
-    Validation -
-    1.  Time should follow a proper format.
-    2. Users shouldn't be able to select a past time slot.
-    3. Ensure the slot follows a predefined duration (e.g., 30 min, 1 hour).
-    4. Prevent booking if the slot is already full."]
-    K1 -- Invalid Slot --> K2["Show 'Invalid Time Slot' Error"]
+    I1 -- Invalid Date --> I2@{ label: "Show 'Invalid Date' Error" }
+    I1 -- Valid Date --> K1@{ label: "Select Time Slot\n    Validation -\n    1. Time should follow a proper format.\n    2. Users shouldn't be able to select a past time slot.\n    3. Ensure the slot follows a predefined duration (e.g., 30 min, 1 hour).\n    4. Prevent booking if the slot is already full." }
+    K1 -- Invalid Slot --> K2@{ label: "Show 'Invalid Time Slot' Error" }
     K1 -- Valid Slot --> M{"Is Date & Time Preference Saved?"}
     M -- Yes --> H
     M -- No --> N["Ask for Date & Time Again"]
@@ -31,28 +26,69 @@ flowchart TD
     Validation -
     1. The entered address exists and can be mapped.
     2. Select an address from the Google Maps autocomplete dropdown.
-    3. Location services are enabled for accurate search results."] 
-    H --> P["Select Pin on Map
+    3. Location services are enabled for accurate search results."] & P["Select Pin on Map
     Validation -
     1. Only Numbers are allowed, no letters and special characters are allowed.
     2. It should match the standard length based on the country.
     3. It falls within the correct range of valid pincodes for the selected country/region.
-    4. The pincode should be within serviceable areas."]
-    H --> Q["Select from Saved Address"]
+    4. The pincode should be within serviceable areas."] & Q["Select from Saved Address"]
     Q --> S{"Saved Address Exists?"}
     S -- No --> T["Add New Address with Tag, Lat/Long, Address Description"]
-    S -- Yes --> U[""Select Drop Address]
+    S -- Yes --> U["Select Drop Location"]
     P --> U
     O --> U
     U --> V{"Multiple Drop Locations?"}
     V -- Yes --> W["Select Multiple Drop Addresses (Same Steps as Pickup)"]
     V -- No --> X["Select One Drop Address (Same Steps as Pickup)"]
-    W --> Y["Enter Contact, Name, Instruction (Prefilled Addresses)"]
-    X --> Y
-
-    Y --> AB{"Skip Goods Information?"}
+    W --> Y1["Enter Contact Number
+    Validations-
+    1. Phone number must contain only numbers. No Alphbets and special characters are allowed other than +.
+    2. Phone number must be exactly 10 digits, excluding country code.
+    3. Phone number should not start with zero."]
+    Y1 --> Y2["Enter Name
+    Validation -
+    1. Name must be between 2 and 200 characters.
+    2. Allow only A-Z, a-z, and spaces (no numbers or special characters).
+    3. Restrict @, #, $, %, 123, etc.
+    4. No leading and trailing spaces are allowed.
+    5. Auto case sensitivity should be applied."]
+    Y2 --> Y3["Enter Delivery Instruction"]
+    X --> Y1
+    Y3 --> AB{"Skip Goods Information?"}
     AB -- Yes --> AC["Vehicle Types View: TATA Ace, TATA 407, 8ft Pickup, 3 Wheeler, 2 Wheeler"]
-    AB -- No --> AD1["Select Goods Category"] --> AD2["Select Goods Type"] --> AD3["Enter Package Dimensions"] --> AD4["Enter Package Weight"] --> AD5["Enter Total Value of Goods"] --> AD6["Select Insurance Status"]
+    AB -- No --> AD1["Select Goods Category
+    Validaions - 
+    1.  Ensure the selected category exists in the predefined list.
+    2. Block restricted or hazardous goods if not allowed.
+    3. In others - Restrict invalid characters like @, #, $, 123."]
+    AD1 --> AD2["Select Goods Type
+    Validations -
+    1. The chosen type must match a predefined list.
+    2.  If certain goods types are restricted (e.g., hazardous, flammable), verify permissions.
+    3. In others - Restrict special characters and numbers in manually entered goods types.
+    4. Goods type must be between 3 and 100 characters."]
+    AD2 --> AD3["Enter Package Dimensions
+    Validationns -
+    1. Length, Width, Height, and Unit must be provided.
+    2. Only allow numbers (no letters or special characters except decimal points).
+    3. Dimensions must be greater than zero.
+    4. Allow only predefined units (cm, inch, mm, feet).
+    5.  If total volume (L × W × H) exceeds the limit, prevent submission.
+    6. Restrict unnecessary decimal places (e.g., max 2 decimal places).
+"]
+    AD3 --> AD4["Enter Package Weight
+    Validation -
+    1. f the checkbox is checked, weight input must be provided and valid.
+    2. Ensure the checkbox is not conflicting with other weight-related inputs (e.g., pre-filled weights).
+    3. Estimated weight is not valid for the selected goods category."]
+    AD4 --> AD5["Enter Total Value of Goods
+    Validation -
+    1. Allow only numbers (no letters or special characters except decimal points).
+    2. Value must be greater than zero.
+    3. Total value exceeds the maximum allowed limit.
+    4. Only two decimal places are allowed.
+    5. If the value exceeds a certain threshold, prompt for mandatory insurance selection."]
+    AD5 --> AD6["Select Insurance Status"]
     AD6 --> AE{"Goods Information Saved?"}
     AE -- No --> AF["Show Validation Errors"]
     AE -- Yes --> AC
@@ -65,5 +101,14 @@ flowchart TD
     AK --> AL{"Is Payment Successful?"}
     AL -- No --> AM["Show Payment Failure & Retry Option"]
     AL -- Yes --> AN["Show Confirmation & Order Summary"]
+
+    F@{ shape: rect}
+    G@{ shape: rect}
+    I2@{ shape: rect}
+    K1@{ shape: rect}
+    K2@{ shape: rect}
+
+
+Yes --> AN["Show Confirmation & Order Summary"]
 ```
 
