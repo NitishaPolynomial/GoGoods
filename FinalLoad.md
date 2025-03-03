@@ -88,16 +88,42 @@ flowchart TD
     3. Total value exceeds the maximum allowed limit.
     4. Only two decimal places are allowed.
     5. If the value exceeds a certain threshold, prompt for mandatory insurance selection."]
-    AD5 --> AD6["Select Insurance Status"]
+    AD5 --> AD6["Select Insurance Status
+    Validations - 
+    1. Ensure the checkbox is checked if insurance is compulsory for high-value goods.
+    2. Insured amount cannot exceed the total value of goods.
+    3. "]
     AD6 --> AE{"Goods Information Saved?"}
     AE -- No --> AF["Show Validation Errors"]
     AE -- Yes --> AC
     AC --> AG{"Additional Services Required?"}
-    AG -- Yes --> AH["Select: Loading & Unloading, Only Loading, Only Unloading, Proof of Delivery (Pricing Applies)"]
+    AG -- Yes --> AH1["Select Loading & Unloading
+    Validations -
+    1. If selected, Only Loading and Only Unloading should be disabled to prevent duplicate charges
+    2. Ensure the total price is updated accordingly.
+    3. An error message should be displayed You cannot select 'Only Loading' or 'Only Unloading' if 'Loading and Unloading' is already selected."] --> AH2["Select Only Loading
+    Validations - 
+    1. If selected, Loading and Unloading should be disabled (as it's a combined service).
+    2. If both Only Loading and Only Unloading are selected, ensure the total cost equals ₹800 (same as combined service).
+    "] --> AH3["Select Only Unloading
+    Validations -
+    1. If selected, Loading and Unloading should be disabled."] --> AH4["Select Proof of Delivery (Pricing Applies)
+    Validations -
+    1. Optional, can be selected with any combination of the above services.
+    2. Ensure that the total price updates correctly when this option is added."]
     AG -- No --> AI["Continue with Selected Vehicle Type"]
-    AI --> AJ["Review Details: Pickup, Drop, Preferences"]
-    AH --> AJ
-    AJ --> AK["Payment Summary Page"]
+    AH4 --> AJ["Review Details: Pickup, Drop, Preferences"]
+    AH3 --> AJ
+    AH2 --> AJ
+    AH1 --> AJ
+    AI --> AJ
+    AJ --> AK["Payment Summary Page
+    Validations -
+    1. Ensure selected services and pricing are accurately displayed.
+    2. Validate subtotal, taxes, discounts, and final amount.
+    3. Prevent checkout if no payment method is chosen.
+    4. Ensure only applicable and unexpired promo codes are applied.
+    5. Disable the confirm button after one click to avoid double transactions."]
     AK --> AL{"Is Payment Successful?"}
     AL -- No --> AM["Show Payment Failure & Retry Option"]
     AL -- Yes --> AN["Show Confirmation & Order Summary"]
@@ -108,7 +134,5 @@ flowchart TD
     K1@{ shape: rect}
     K2@{ shape: rect}
 
-
-Yes --> AN["Show Confirmation & Order Summary"]
-```
+ ```
 
